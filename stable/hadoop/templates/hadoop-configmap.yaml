@@ -42,7 +42,7 @@ data:
     if [[ "${HOSTNAME}" =~ "hdfs-dn" ]]; then
       mkdir -p /root/hdfs/datanode
 
-      #  wait up to 30 seconds for namenode 
+      #  wait up to 30 seconds for namenode
       (while [[ $count -lt 15 && -z `curl -sf http://{{ template "hadoop.fullname" . }}-hdfs-nn:50070` ]]; do ((count=count+1)) ; echo "Waiting for {{ template "hadoop.fullname" . }}-hdfs-nn" ; sleep 2; done && [[ $count -lt 15 ]])
       [[ $? -ne 0 ]] && echo "Timeout waiting for hdfs-nn, exiting." && exit 1
 
@@ -193,11 +193,11 @@ data:
     . $HADOOP_LIBEXEC_DIR/yarn-config.sh
 
     # start resourceManager
-    # "$bin"/yarn-daemon.sh --config $YARN_CONF_DIR  start resourcemanager
+    # "$bin"/yarn-daemon.sh --config $YARN_CONF_DIR start resourcemanager
     # start nodeManager
-    "$bin"/yarn-daemon.sh --config $YARN_CONF_DIR  start nodemanager
+    "$bin"/yarn-daemon.sh --config $YARN_CONF_DIR start nodemanager
     # start proxyserver
-    #"$bin"/yarn-daemon.sh --config $YARN_CONF_DIR  start proxyserver
+    #"$bin"/yarn-daemon.sh --config $YARN_CONF_DIR start proxyserver
 
   start-yarn-rm.sh: |
     #!/usr/bin/env bash
@@ -230,11 +230,11 @@ data:
     . $HADOOP_LIBEXEC_DIR/yarn-config.sh
 
     # start resourceManager
-    "$bin"/yarn-daemon.sh --config $YARN_CONF_DIR  start resourcemanager
+    "$bin"/yarn-daemon.sh --config $YARN_CONF_DIR start resourcemanager
     # start nodeManager
-    # "$bin"/yarn-daemons.sh --config $YARN_CONF_DIR  start nodemanager
+    # "$bin"/yarn-daemons.sh --config $YARN_CONF_DIR start nodemanager
     # start proxyserver
-    "$bin"/yarn-daemon.sh --config $YARN_CONF_DIR  start proxyserver
+    #"$bin"/yarn-daemon.sh --config $YARN_CONF_DIR start proxyserver
 
   yarn-site.xml: |
     <?xml version="1.0"?>
