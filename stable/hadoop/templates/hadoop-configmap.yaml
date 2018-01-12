@@ -37,6 +37,8 @@ data:
       $HADOOP_PREFIX/bin/hdfs namenode -format -force -nonInteractive
       sed -i s/{{ template "hadoop.fullname" . }}-hdfs-nn/0.0.0.0/ /usr/local/hadoop/etc/hadoop/core-site.xml
       $HADOOP_PREFIX/sbin/hadoop-daemon.sh start namenode
+      # Create tmp dir
+      $HADOOP_PREFIX/bin/hdfs dfs -chmod 777 /
     fi
 
     if [[ "${HOSTNAME}" =~ "hdfs-dn" ]]; then
