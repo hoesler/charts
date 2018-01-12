@@ -66,7 +66,14 @@ yarn:
         cpu: "1000m"
 
 mapred:
-  historyServer: {}
+  historyServer:
+    resources:
+      requests:
+        memory: "256Mi"
+        cpu: "10m"
+      limits:
+        memory: "2048Mi"
+        cpu: "1000m"
 
 persistence:
   nameNode:
