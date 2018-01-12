@@ -65,6 +65,9 @@ yarn:
         memory: "2048Mi"
         cpu: "1000m"
 
+mapred:
+  historyServer: {}
+
 persistence:
   nameNode:
     enabled: false

@@ -1,0 +1,63 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "hadoop.fullname" . }}-mapred-hs
+  labels:
+    app: {{ template "hadoop.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: mapred-hs
+spec:
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: {{ template "hadoop.name" . }}
+        release: {{ .Release.Name }}
+        component: mapred-hs
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/hadoop-configmap.yaml") . | sha256sum  }}
+    spec:
+      containers:
+      - name: mapred-hs
+        image: {{ .Values.image }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        ports:
+        - containerPort: 10020
+          name: history
+        - containerPort: 19888
+          name: history-webapp
+        command:
+           - "/bin/bash"
+           - "/tmp/hadoop-config/bootstrap.sh"
+           - "-d"
+        resources:
+{{ toYaml .Values.mapred.historyServer.resources | indent 10 }}
+        readinessProbe:
+          httpGet:
+            path: /jobhistory
+            port: 19888
+          initialDelaySeconds: 10
+          timeoutSeconds: 2
+        livenessProbe:
+          httpGet:
+            path: /jobhistory
+            port: 19888
+          initialDelaySeconds: 10
+          timeoutSeconds: 2
+        volumeMounts:
+        - name: hadoop-config
+          mountPath: /tmp/hadoop-config
+      volumes:
+      - name: hadoop-config
+        configMap:
+          name: {{ template "hadoop.fullname" . }}
+{{- if .Values.global.imagePullSecrets }}
+      imagePullSecrets:
+  {{- $context := . -}}
+  {{- range .Values.global.imagePullSecrets }}
+      - name: {{ if .fqan }}{{ .fqan }}{{ else }}{{ tuple .name $context | include "fqan" }}{{ end }}
+  {{- end }}
+{{- end }}

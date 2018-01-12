@@ -1,0 +1,23 @@
+# A headless service to create DNS records
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "hadoop.fullname" . }}-mapred-hs
+  labels:
+    app: {{ template "hadoop.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: mapred-hs
+spec:
+  ports:
+  - port: 10020
+    name: history
+    targetPort: history
+  - port: 19888
+    name: history-webapp
+    targetPort: history-webapp
+  selector:
+    app: {{ template "hadoop.name" . }}
+    release: {{ .Release.Name }}
+    component: mapred-hs
